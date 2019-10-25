@@ -193,9 +193,10 @@ def bootstrap_puppet():
     cmd = ('/opt/puppetlabs/bin/puppet agent'
            ' --logdest /tmp/puppet_bootstrap.log'
            ' --no-daemonize'
-           ' --onetime --server %s --waitforcert 120' % (installerHostName))
+           ' --onetime --server %s --detailed-exitcodes --waitforcert 120' % (installerHostName))
 
-    tryCommand(cmd)
+    tryCommand(cmd, retry_limit=25, good_return_values=(0,2),
+               max_sleep_time=120000, sleep_interval=2000)
 
 def register_compute():
     tryCommand('echo "%s" >> /.tortuga_execd' %(installerHostName))
